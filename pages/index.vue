@@ -28,66 +28,36 @@
       </v-card>
     </v-dialog>
 
-    <!-- <v-card width="500px">
-      <v-card-media height="200px"> </v-card-media>
-      <v-card-title primary-title>
-        <div>
-          <h3 class="headline mb-0">headline</h3>
-          <div>description</div>
-        </div>
-      </v-card-title>
-      <v-card-actions>
-        <v-btn flat color="primary">text</v-btn>
-        <v-btn flat color="primary">text</v-btn>
-      </v-card-actions>
-    </v-card> -->
+    <div>
+      <v-card
+        class="d-flex align-center pa-6"
+        v-for="scheme in getSchemes"
+        :key="scheme.name"
+      >
+        <v-card-title>
+          <h3>{{ scheme.displayName }}</h3>
+        </v-card-title>
+        <v-card-title v-for="benefit in scheme.benefits" :key="benefit.name">
+          <h3>{{ benefit.displayName }}</h3>
+        </v-card-title>
+        <v-spacer></v-spacer>
+        <v-btn color="info" @click="$router.push(`/${scheme.name}`)"
+          >Open</v-btn
+        >
+      </v-card>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  computed: {
+    getSchemes() {
+      return this.$store.getters.getSchemes;
+    },
+  },
   data() {
     return {
-      schemeSet: {
-        name: 121,
-        displayName: "",
-        schemes: [
-          {
-            name: "",
-            displayName: "",
-            pillars: [
-              {
-                name: 121,
-                displayName: "",
-                kpi_dataSet: "",
-                slabs: [
-                  {
-                    id: 1,
-                    value: 100,
-                  },
-                  {
-                    id: 2,
-                    value: 100,
-                  },
-                  {
-                    id: 3,
-                    value: 100,
-                  },
-                ],
-              },
-            ],
-            benefits: [
-              {
-                name: 121,
-                displayName: "benefitName",
-                type: "fixed",
-                unit: ["USD", "INR", "Points"],
-                value: 99,
-              },
-            ],
-          },
-        ],
-      },
       dialog: false,
       schemeName: "",
     };
@@ -96,8 +66,8 @@ export default {
     createScheme() {
       if (this.schemeName == "") return;
       this.dialog = false;
-      this.schemeSet.schemes.push({
-        name: Math.floor(Math.random() * (50 - 1 + 1)) + 1,
+      this.$store.dispatch("addscheme", {
+        name: Math.floor(Math.random() * (500 - 1 + 1)) + 1,
         displayName: this.schemeName,
         pillars: [
           {
@@ -107,12 +77,12 @@ export default {
             slabs: [],
           },
         ],
+        benefits: [],
       });
-      console.log(JSON.stringify(this.schemeSet, null, 2));
     },
   },
 };
 </script>
 
 <style>
-</style>
+</style> 

@@ -1,14 +1,14 @@
 export const state = () => ({
   schemeSet: {
-    name: 121,
+    name: 100,
     displayName: "default",
     schemes: [
       {
-        name: 121,
-        displayName: "Keval Schemes",
+        name: 300,
+        displayName: "Keval Schemes 1",
         pillars: [
           {
-            name: 121,
+            name: 400,
             displayName: "Sales",
             kpi_dataSet: "",
             slabs: [
@@ -42,21 +42,68 @@ export const state = () => ({
           },
         ],
       },
+      {
+        name: 301,
+        displayName: "Keval Schemes 2",
+        pillars: [
+          {
+            name: 401,
+            displayName: "Sales 2 ",
+            kpi_dataSet: "",
+            slabs: [
+              {
+                id: 1,
+                value: 100,
+                config: "greater",
+              },
+              {
+                id: 2,
+                value: 100,
+                config: "between",
+                b_value: 100,
+              },
+              {
+                id: 3,
+                value: 100,
+                config: "between",
+                b_value: 100,
+              },
+            ],
+          },
+        ],
+        benefits: [
+          {
+            name: 121,
+            displayName: "N2",
+            type: "fixed",
+            unit: ["USD", "INR", "Points"],
+            value: 99,
+          },
+        ],
+      },
     ],
   },
 });
-
 export const mutations = {
   SET_SCHEME(state, obj) {
     state.schemeSet.schemes.push(obj);
   },
   UPDATE_SLAB(state, obj) {
-    const { name, id, e } = obj;
-    console.log(name, e, id);
-    const pillar = state.schemeSet.schemes.filter(
-      (scheme) => scheme.name == name
-    );
-    console.log(pillar);
+    const { SchemeName, input_value, slab_id, pillar } = obj;
+    state.schemeSet.schemes.forEach((schemes, i) => {
+      if (schemes.name == SchemeName) {
+        schemes.pillars.forEach((p, p_i) => {
+          if (p.name == pillar) {
+            p.slabs.forEach((s, s_i) => {
+              if (s.id == slab_id) {
+                state.schemeSet.schemes[i].pillars[p_i].slabs[s_i].value =
+                  input_value;
+              }
+            });
+          }
+        });
+      }
+    });
   },
 };
 

@@ -69,14 +69,7 @@ export default {
       this.$store.dispatch("addscheme", {
         name: Math.floor(Math.random() * (500 - 1 + 1)) + 1,
         displayName: this.schemeName,
-        pillars: [
-          {
-            name: 121,
-            displayName: "",
-            kpi_dataSet: "",
-            slabs: [],
-          },
-        ],
+        pillars: [],
         benefits: [],
       });
     },

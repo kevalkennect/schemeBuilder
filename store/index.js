@@ -3,84 +3,45 @@ export const state = () => ({
     name: 100,
     displayName: "default",
     schemes: [
-      {
-        name: 300,
-        displayName: "Keval Schemes 1",
-        pillars: [
-          {
-            name: 400,
-            displayName: "Sales",
-            kpi_dataSet: "",
-            slabs: [
-              {
-                id: 1,
-                value: 100,
-                config: "greater",
-              },
-              {
-                id: 2,
-                value: 100,
-                config: "between",
-                b_value: 100,
-              },
-              {
-                id: 3,
-                value: 100,
-                config: "between",
-                b_value: 100,
-              },
-            ],
-          },
-        ],
-        benefits: [
-          {
-            name: 121,
-            displayName: "N1",
-            type: "fixed",
-            unit: ["USD", "INR", "Points"],
-            value: 99,
-          },
-        ],
-      },
-      {
-        name: 301,
-        displayName: "Keval Schemes 2",
-        pillars: [
-          {
-            name: 401,
-            displayName: "Sales 2 ",
-            kpi_dataSet: "",
-            slabs: [
-              {
-                id: 1,
-                value: 100,
-                config: "greater",
-              },
-              {
-                id: 2,
-                value: 100,
-                config: "between",
-                b_value: 100,
-              },
-              {
-                id: 3,
-                value: 100,
-                config: "between",
-                b_value: 100,
-              },
-            ],
-          },
-        ],
-        benefits: [
-          {
-            name: 121,
-            displayName: "N2",
-            type: "fixed",
-            unit: ["USD", "INR", "Points"],
-            value: 99,
-          },
-        ],
-      },
+      // {
+      //   name: 300,
+      //   displayName: "Keval Schemes 1",
+      //   pillars: [
+      //     {
+      //       name: 400,
+      //       displayName: "Sales",
+      //       kpi_dataSet: "",
+      //       slabs: [
+      //         {
+      //           id: 1,
+      //           value: 100,
+      //           config: "greater",
+      //         },
+      //         {
+      //           id: 2,
+      //           value: 100,
+      //           config: "between",
+      //           b_value: 100,
+      //         },
+      //         {
+      //           id: 3,
+      //           value: 100,
+      //           config: "between",
+      //           b_value: 100,
+      //         },
+      //       ],
+      //     },
+      //   ],
+      //   benefits: [
+      //     {
+      //       name: 121,
+      //       displayName: "N1",
+      //       type: "fixed",
+      //       unit: ["USD", "INR", "Points"],
+      //       value: 99,
+      //     },
+      //   ],
+      // },
     ],
   },
 });
@@ -105,6 +66,22 @@ export const mutations = {
       }
     });
   },
+  ADD_PILLAR(state, obj) {
+    const { schemeName, pillarObj } = obj;
+    state.schemeSet.schemes.forEach((schemes, i) => {
+      if (schemes.name == schemeName) {
+        state.schemeSet.schemes[i].pillars.push(pillarObj);
+      }
+    });
+  },
+  ADD_BENEFIT(state, obj) {
+    const { schemeName, benefitObj } = obj;
+    state.schemeSet.schemes.forEach((schemes, i) => {
+      if (schemes.name == schemeName) {
+        state.schemeSet.schemes[i].benefits.push(benefitObj);
+      }
+    });
+  },
 };
 
 export const actions = {
@@ -113,6 +90,12 @@ export const actions = {
   },
   updateSlab(state, payload) {
     state.commit("UPDATE_SLAB", payload);
+  },
+  addPillar(state, payload) {
+    state.commit("ADD_PILLAR", payload);
+  },
+  addBenefit(state, payload) {
+    state.commit("ADD_BENEFIT", payload);
   },
 };
 

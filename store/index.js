@@ -1,49 +1,5 @@
 export const state = () => ({
-  schemeSet: {
-    name: 100,
-    displayName: "default",
-    schemes: [
-      // {
-      //   name: 300,
-      //   displayName: "Keval Schemes 1",
-      //   pillars: [
-      //     {
-      //       name: 400,
-      //       displayName: "Sales",
-      //       kpi_dataSet: "",
-      //       slabs: [
-      //         {
-      //           id: 1,
-      //           value: 100,
-      //           config: "greater",
-      //         },
-      //         {
-      //           id: 2,
-      //           value: 100,
-      //           config: "between",
-      //           b_value: 100,
-      //         },
-      //         {
-      //           id: 3,
-      //           value: 100,
-      //           config: "between",
-      //           b_value: 100,
-      //         },
-      //       ],
-      //     },
-      //   ],
-      //   benefits: [
-      //     {
-      //       name: 121,
-      //       displayName: "N1",
-      //       type: "fixed",
-      //       unit: ["USD", "INR", "Points"],
-      //       value: 99,
-      //     },
-      //   ],
-      // },
-    ],
-  },
+  schemeSet: {},
 });
 export const mutations = {
   SET_SCHEME(state, obj) {
@@ -82,9 +38,25 @@ export const mutations = {
       }
     });
   },
+  SET_SCHEMESET(state, obj) {
+    console.log(obj);
+    state.schemeSet = obj;
+  },
 };
 
 export const actions = {
+  setSchemeset(state, payload) {
+    state.commit("SET_SCHEMESET", payload);
+  },
+  nuxtServerInit(vuexContext, context) {
+    return context.$axios
+      .$get("http://localhost:3001")
+      .then((res) => {
+        console.log(vuexContext);
+        vuexContext.state.schemeSet = res;
+      })
+      .catch((e) => context.error(e));
+  },
   addscheme(state, payload) {
     state.commit("SET_SCHEME", payload);
   },

@@ -260,12 +260,25 @@ export default {
   },
   methods: {
     slabUpdated(input_value, slab_id, SchemeName, pillar) {
-      this.$store.dispatch("updateSlab", {
-        SchemeName,
-        input_value,
-        slab_id,
-        pillar,
-      });
+      this.$axios
+        .$post("http://localhost:3001/api/schemes/slab", {
+          SchemeName,
+          input_value,
+          slab_id,
+          pillar,
+        })
+        .then((res) => {
+          console.log(res);
+          if (res.status == "ok") {
+            // this.$store.dispatch("addscheme", obj);
+            this.$store.dispatch("updateSlab", {
+              SchemeName,
+              input_value,
+              slab_id,
+              pillar,
+            });
+          }
+        });
     },
     addPillar(schemeName) {
       const pillarObj = {
@@ -294,10 +307,21 @@ export default {
         ],
       };
       console.log(pillarObj);
-      this.$store.dispatch("addPillar", {
-        schemeName,
-        pillarObj,
-      });
+
+      this.$axios
+        .$post("http://localhost:3001/api/schemes/pillar", {
+          schemeName,
+          pillarObj,
+        })
+        .then((res) => {
+          if (res.status == "ok") {
+            this.$store.dispatch("addPillar", {
+              schemeName,
+              pillarObj,
+            });
+          }
+        });
+
       this.pillarDialog = false;
     },
     addBenefit(schemeName) {
@@ -308,11 +332,22 @@ export default {
         unit: this.unitValue,
         value: this.benefitValue,
       };
-      console.log(benefitObj);
-      this.$store.dispatch("addBenefit", {
-        schemeName,
-        benefitObj,
-      });
+      // console.log(benefitObj);
+
+      this.$axios
+        .$post("http://localhost:3001/api/benefits", {
+          schemeName,
+          benefitObj,
+        })
+        .then((res) => {
+          console.log(res);
+          if (res.status == "ok") {
+            this.$store.dispatch("addBenefit", {
+              schemeName,
+              benefitObj,
+            });
+          }
+        });
     },
     calculate(arr) {
       let slab = 1;

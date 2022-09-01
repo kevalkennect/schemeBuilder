@@ -1,11 +1,10 @@
 const express = require("express");
 const scheme = require("./models/schemeSet");
-const { run } = require("./db.js");
+// const { run } = require("./db.js");
 const app = express();
 const PORT = 3001;
 const cors = require("cors");
 
-console.log(run);
 
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencode

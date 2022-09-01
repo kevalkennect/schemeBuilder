@@ -1,9 +1,8 @@
 const express = require("express");
 const { Transform } = require("stream");
 const { schemes } = require("../models/schemeSet");
-const schemeSet = require("../models/schemeSet");
-
 const schemeRouter = express.Router();
+const getDb = require("../db");
 
 const crypto = require("crypto");
 
@@ -24,11 +23,25 @@ const encrypted = new Transform({
 //   res.
 // });
 
-schemeRouter.post("/", (req, res) => {
+schemeRouter.post("/", async function (req, res) {
   try {
     if (req.body) {
       try {
-        schemes.push(req.body);
+        //add data to schemes
+
+        // search the database
+        // const responses = db
+        //   .collection("schemes")
+        //   .insertOne(req.body)
+        //   .then((res) => console.log(res));
+
+        if (!responses) {
+          return res.status(400).json({ error: "no responses found" });
+        }
+
+        // if request is made without a session or valid query
+        return res.status(400).json({ error: "Nope, that did not work" });
+        // schemes.push(req.body);
         res.status(200).json({ status: "ok" });
       } catch (error) {
         res.status(401).json({ status: error });

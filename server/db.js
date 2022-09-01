@@ -1,31 +1,10 @@
-const { MongoClient } = require("mongodb");
-// or as an es module:
-// import { MongoClient } from 'mongodb'
+const mclient = require("mongodb").MongoClient;
+const dburl = "mongodb://127.0.0.1:27017";
 
-// Connection URL
-const url = "mongodb://localhost:27017";
-const client = new MongoClient(url);
-
-// Database Name
-const dbName = "schemeBuilder";
-
-async function main() {
-  // Use connect method to connect to the server
-  await client.connect();
-  console.log("Connected successfully to server");
-  const db = client.db(dbName);
-  const collection = db.collection("documents");
-
-  const findResult = await collection.find({}).toArray();
-  console.log("Found documents =>", findResult);
-  // the following code examples can be pasted here...
-
-  return "done.";
-}
-
-main()
-  .then(console.log)
-  .catch(console.error)
-  .finally(() => client.close());
-
-module.exports = main;
+module.exports.connect = function connect(callback) {
+  mclient.connect(dburl, function (err, conn) {
+    /* exports the connection */
+    module.exports.db = conn;
+    callback(err);
+  });
+};

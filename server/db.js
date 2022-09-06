@@ -1,10 +1,33 @@
-const mclient = require("mongodb").MongoClient;
-const dburl = "mongodb://127.0.0.1:27017";
+const mongodb = require("mongodb");
 
-module.exports.connect = function connect(callback) {
-  mclient.connect(dburl, function (err, conn) {
-    /* exports the connection */
-    module.exports.db = conn;
-    callback(err);
-  });
+const MongoClient = mongodb.MongoClient;
+const mongoDbUrl = "mongodb://127.0.0.1:27017";
+
+let _db;
+
+const initDb = (callback) => {
+  if (_db) {
+    console.log("Database is already initialized!");
+    return callback(null, _db);
+  }
+  MongoClient.connect(mongoDbUrl)
+    .then((client) => {
+      _db = client;
+      callback(null, _db);
+    })
+    .catch((err) => {
+      callback(err);
+    });
+};
+
+const getDb = () => {
+  if (!_db) {
+    throw Error("Database not initialzed");
+  }
+  return _db;
+};
+
+module.exports = {
+  initDb,
+  getDb,
 };

@@ -1,10 +1,12 @@
 const express = require("express");
 const { Transform } = require("stream");
 const { schemes } = require("../models/schemeSet");
+const schemeSet = require("../models/schemeSet");
+const db = require("../db.js");
 const schemeRouter = express.Router();
-const getDb = require("../db");
 
 const crypto = require("crypto");
+const { ObjectId } = require("mongodb");
 
 const key = "uOvNQtuuQSuGohRSnrBiSqKF3ekrwL2E";
 const iv = "bz9Zu4absXF4abk8";
@@ -23,28 +25,30 @@ const encrypted = new Transform({
 //   res.
 // });
 
-schemeRouter.post("/", async function (req, res) {
+schemeRouter.post("/", (req, res) => {
   try {
     if (req.body) {
       try {
-        //add data to schemes
-
-        // search the database
-        // const responses = db
-        //   .collection("schemes")
-        //   .insertOne(req.body)
-        //   .then((res) => console.log(res));
-
-        if (!responses) {
-          return res.status(400).json({ error: "no responses found" });
-        }
-
-        // if request is made without a session or valid query
-        return res.status(400).json({ error: "Nope, that did not work" });
+        db.getDb()
+          .db("schemebuilder")
+          .collection("schemes")
+          .insertOne(req.body)
+          .then((result) => {
+            console.log(result);
+            res.status(200).json({
+              message: "Product added",
+              schemeId: result.insertedId,
+              status: "ok",
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json({ message: "An error occurred." });
+          });
         // schemes.push(req.body);
-        res.status(200).json({ status: "ok" });
+        // res.status(200).json({ status: "ok" });
       } catch (error) {
-        res.status(401).json({ status: error });
+        res.send(error);
       }
     }
   } catch (error) {
@@ -56,22 +60,51 @@ schemeRouter.post("/slab", (req, res) => {
     if (req.body) {
       try {
         const { SchemeName, input_value, slab_id, pillar } = req.body;
-        schemes.forEach((sch, i) => {
-          if (sch.name == SchemeName) {
-            sch.pillars.forEach((p, p_i) => {
-              if (p.name == pillar) {
-                p.slabs.forEach((s, s_i) => {
-                  if (s.id == slab_id) {
-                    schemes[i].pillars[p_i].slabs[s_i].value = +input_value;
-                  }
-                });
-              }
-            });
-          }
-        });
-        res.status(200).json({ status: "ok" });
+        console.log(typeof SchemeName);
+        db.getDb()
+          .db("schemebuilder")
+          .collection("schemes")
+          .updateOne(
+            {
+              name: SchemeName,
+              "pillars.name": pillar,
+              "pillars.slabs.id": slab_id,
+              // "pillars.name.slabs.id": slab_id,
+            },
+            {
+              $set: { "pillars.slabs.id": input_value },
+            }
+          )
+          .then((result) => {
+            console.log(result);
+            // res.send(result);
+            // res.status(200).json({
+            //   message: "Pillar added",
+            //   schemeId: result.insertedId,
+            //   status: "ok",
+            // });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json({ message: "An error occurred." });
+          });
+
+        // schemes.forEach((sch, i) => {
+        //   if (sch.name == SchemeName) {
+        //     sch.pillars.forEach((p, p_i) => {
+        //       if (p.name == pillar) {
+        //         p.slabs.forEach((s, s_i) => {
+        //           if (s.id == slab_id) {
+        //             schemes[i].pillars[p_i].slabs[s_i].value = +input_value;
+        //           }
+        //         });
+        //       }
+        //     });
+        //   }
+        // });
+        // res.status(200).json({ status: "ok" });
       } catch (error) {
-        res.status(401).json({ status: error });
+        console.log(error);
       }
     }
   } catch (error) {
@@ -80,19 +113,74 @@ schemeRouter.post("/slab", (req, res) => {
 });
 
 // add pillar
-
 schemeRouter.post("/pillar", (req, res) => {
   try {
     if (req.body) {
       try {
         const { schemeName, pillarObj } = req.body;
         console.log(schemeName, pillarObj);
-        schemes.forEach((sche, i) => {
-          if (sche.name == schemeName) {
-            schemes[i].pillars.push(pillarObj);
-          }
-        });
-        res.status(200).json({ status: "ok" });
+
+        db.getDb()
+          .db("schemebuilder")
+          .collection("schemes")
+          .updateOne(
+            { name: schemeName },
+            {
+              $push: {
+                pillars: pillarObj,
+              },
+            }
+          )
+          .then((result) => {
+            console.log(result);
+            res.status(200).json({
+              message: "Pillar added",
+              schemeId: result.insertedId,
+              status: "ok",
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json({ message: "An error occurred." });
+          });
+      } catch (error) {
+        res.status(401).json({ status: error });
+      }
+    }
+  } catch (error) {
+    res.status(400).statusMessage("ERROR");
+  }
+});
+schemeRouter.delete("/pillar", (req, res) => {
+  try {
+    if (req.body) {
+      try {
+        const { pillarName, id } = req.body;
+        console.log(pillarName, id);
+
+        // const result = await pizza.updateOne(query, updateDocument);
+        // console.log(pillarName, schemeId);
+        db.getDb()
+          .db("schemebuilder")
+          .collection("schemes")
+          .updateOne(
+            { _id: ObjectId(id) },
+            { $pull: { pillars: { name: pillarName } } },
+            false,
+            true
+          )
+          .then((result) => {
+            console.log(result);
+            res.status(200).json({
+              message: "Pillar Deleted",
+              schemeId: result.insertedId,
+              status: "ok",
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json({ message: "An error occurred." });
+          });
       } catch (error) {
         res.status(401).json({ status: error });
       }

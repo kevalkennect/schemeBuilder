@@ -44,7 +44,9 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="info" @click="benefitDialog = false">close</v-btn>
-              <v-btn color="success" @click="addBenefit(scheme.name)"
+              <v-btn
+                color="success"
+                @click="addBenefit(scheme.name, scheme._id)"
                 >Add</v-btn
               >
             </v-card-actions>
@@ -155,6 +157,7 @@
                   </h4>
                   <v-spacer></v-spacer>
                 </div>
+                <v-btn @click="deletePillar(pillar, scheme._id)">🗑</v-btn>
               </div>
             </v-card>
           </div>
@@ -221,6 +224,7 @@
         >
           <h3>{{ index + 1 }} : {{ benefit.displayName }}</h3>
           <h3>{{ benefit.value }}</h3>
+          <v-btn>🗑</v-btn>
         </div>
         <v-spacer></v-spacer>
         <div class="pa-5">
@@ -238,6 +242,10 @@ export default {
   computed: {
     scheme() {
       return this.$store.getters.getSchemeById(this.$nuxt._route.params.id);
+    },
+    benefits() {
+      console.log(this.scheme._id);
+      return this.scheme._id;
     },
   },
   data() {
@@ -280,6 +288,19 @@ export default {
           }
         });
     },
+    deletePillar(pillar, id) {
+      console.log(pillar.name, id);
+      this.$axios
+        .$delete("http://localhost:3001/api/schemes/pillar", {
+          data: {
+            pillarName: pillar.name,
+            id,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+        });
+    },
     addPillar(schemeName) {
       const pillarObj = {
         name: Math.floor(Math.random() * (500 - 400 + 1)) + 400,
@@ -306,7 +327,6 @@ export default {
           },
         ],
       };
-      console.log(pillarObj);
 
       this.$axios
         .$post("http://localhost:3001/api/schemes/pillar", {
@@ -314,6 +334,7 @@ export default {
           pillarObj,
         })
         .then((res) => {
+          console.log(res);
           if (res.status == "ok") {
             this.$store.dispatch("addPillar", {
               schemeName,
@@ -324,14 +345,18 @@ export default {
 
       this.pillarDialog = false;
     },
-    addBenefit(schemeName) {
+
+    addBenefit(schemeName, id) {
+      console.log(id);
       const benefitObj = {
         name: Math.floor(Math.random() * (600 - 800 + 1)) + 800,
         displayName: this.benefitName,
         type: "fixed",
         unit: this.unitValue,
         value: this.benefitValue,
+        _id: id,
       };
+
       // console.log(benefitObj);
 
       this.$axios

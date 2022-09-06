@@ -41,9 +41,14 @@
           <h3>{{ benefit.displayName }}</h3>
         </v-card-title>
         <v-spacer></v-spacer>
-        <v-btn color="info" @click="$router.push(`/${scheme.name}`)"
+        <v-btn
+          color="info"
+          class="mr-10"
+          @click="$router.push(`/${scheme.name}`)"
           >Open</v-btn
         >
+
+        <v-btn color="info">Delete</v-btn>
       </v-card>
     </div>
   </div>

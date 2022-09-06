@@ -52,10 +52,18 @@ export const actions = {
     return context.$axios
       .$get("http://localhost:3001")
       .then((res) => {
-        console.log(vuexContext);
-        vuexContext.state.schemeSet = res;
+        res.forEach((el) => {
+          console.log(el._id);
+        });
+        vuexContext.state.schemeSet.schemes = res;
       })
-      .catch((e) => context.error(e));
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => {
+        context.error(e);
+        console.log(e);
+      });
   },
   addscheme(state, payload) {
     state.commit("SET_SCHEME", payload);

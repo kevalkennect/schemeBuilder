@@ -1,6 +1,7 @@
 const express = require("express");
 const benefitRoute = express.Router();
 const { schemes } = require("../models/schemeSet");
+const db = require("../db.js");
 
 benefitRoute.get("/", (req, res) => {
   res.send("BENEFITS");
@@ -11,12 +12,23 @@ benefitRoute.post("/", (req, res) => {
     if (req.body) {
       try {
         const { schemeName, benefitObj } = req.body;
-        schemes.forEach((schme, i) => {
-          if (schme.name == schemeName) {
-            schemes[i].benefits.push(benefitObj);
-          }
-        });
-        res.status(200).json({ status: "ok" });
+
+        db.getDb()
+          .db("schemebuilder")
+          .collection("benefits")
+          .insertOne({ schemeName, benefitObj })
+          .then((result) => {
+            console.log(result);
+            res.status(200).json({
+              message: "benefit added",
+              schemeId: result.insertedId,
+              status: "ok",
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json({ message: "An error occurred." });
+          });
       } catch (error) {
         res.status(401).json({ status: error });
       }

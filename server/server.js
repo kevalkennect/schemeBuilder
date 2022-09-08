@@ -18,6 +18,8 @@ app.use("/api/kpi", kpiRouter);
 app.use("/api/benefits", benefitsRouter);
 
 app.get("/", (req, res) => {
+
+  //agreeration here  
   db.getDb()
     .db("schemebuilder")
     .collection("schemes")

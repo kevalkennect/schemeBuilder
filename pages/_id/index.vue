@@ -219,12 +219,12 @@
         <div
           style="width: 100%; border: 1px solid gray"
           class="d-flex align-center justify-space-around"
-          v-for="(benefit, index) of scheme.benefits"
+          v-for="(benefit, index) of benefits"
           :key="benefit.name"
         >
           <h3>{{ index + 1 }} : {{ benefit.displayName }}</h3>
           <h3>{{ benefit.value }}</h3>
-          <v-btn>🗑</v-btn>
+          <v-btn @click="deleteBenefit(benefit, scheme._id)">🗑</v-btn>
         </div>
         <v-spacer></v-spacer>
         <div class="pa-5">
@@ -239,17 +239,20 @@
 
 <script>
 export default {
+  async created() {
+    const data = await this.getBenefits();
+    this.benefits.push(...data.benefits);
+    console.log(this.benefits);
+    // this.benefits.push(this.addBenefit());
+  },
   computed: {
     scheme() {
       return this.$store.getters.getSchemeById(this.$nuxt._route.params.id);
     },
-    benefits() {
-      console.log(this.scheme._id);
-      return this.scheme._id;
-    },
   },
   data() {
     return {
+      benefits: [],
       paths: [],
       benefitDialog: false,
       benefitName: "",
@@ -299,6 +302,8 @@ export default {
         })
         .then((res) => {
           console.log(res);
+          if (res.status == "ok") {
+          }
         });
     },
     addPillar(schemeName) {
@@ -367,10 +372,11 @@ export default {
         .then((res) => {
           console.log(res);
           if (res.status == "ok") {
-            this.$store.dispatch("addBenefit", {
+            this.benefits.push({
               schemeName,
-              benefitObj,
+              ...benefitObj,
             });
+            console.log(this.benefits);
           }
         });
     },
@@ -388,6 +394,46 @@ export default {
       });
       this.paths = newArr;
       console.log(newArr);
+    },
+    async getBenefits() {
+      const { data } = await this.$axios.$get(
+        "http://localhost:3001/api/benefits/",
+        {
+          params: {
+            id: this.scheme._id,
+          },
+        }
+      );
+      return data;
+    },
+    deleteBenefit(benefit, id) {
+      this.$axios
+        .$delete("http://localhost:3001/api/benefits/", {
+          data: {
+            benefit,
+            id,
+          },
+        })
+        .then((res) => {
+          if (res.status == "ok") {
+            //          state.schemeSet.schemes.forEach((el, i, arr) => {
+            //   if (el._id === id) {
+            //     el.pillars.forEach((ul, ui) => {
+            //       if (ul.name === pillarName) {
+            //         console.log(ul.name, ui);
+            //         state.schemeSet.schemes[i].pillars.splice(ui, 1);
+            //       }
+            //     });
+            //   }
+            // });
+            //filter the local array
+            this.benefits.forEach((el, i) => {
+              if (el.name === benefit.name) {
+                this.benefits.splice(el, 1);
+              }
+            });
+          }
+        });
     },
   },
 };

@@ -34,9 +34,20 @@ schemeRouter.post("/", (req, res) => {
           .collection("schemes")
           .insertOne(req.body)
           .then((result) => {
-            console.log(result);
+            console.log("scheme set added", result.insertedId);
+            // use the id that returned in result obj
+            db.getDb()
+              .db("schemebuilder")
+              .collection("benefits")
+              .insertOne({
+                _id: result.insertedId,
+                benefits: [],
+              })
+              .then((result) => {
+                console.log(result);
+              });
             res.status(200).json({
-              message: "Product added",
+              message: "schemes added",
               schemeId: result.insertedId,
               status: "ok",
             });

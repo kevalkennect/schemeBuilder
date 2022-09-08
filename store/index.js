@@ -42,6 +42,22 @@ export const mutations = {
     console.log(obj);
     state.schemeSet = obj;
   },
+  // data.splice(data.findIndex(el => el.id === ID_TO_REMOVE), 1);
+  DELETE_SCHEME(state, obj) {
+    const { pillarName, id } = obj;
+    console.log(pillarName, id);
+
+    state.schemeSet.schemes.forEach((el, i, arr) => {
+      if (el._id === id) {
+        el.pillars.forEach((ul, ui) => {
+          if (ul.name === pillarName) {
+            console.log(ul.name, ui);
+            state.schemeSet.schemes[i].pillars.splice(ui, 1);
+          }
+        });
+      }
+    });
+  },
 };
 
 export const actions = {
@@ -52,13 +68,8 @@ export const actions = {
     return context.$axios
       .$get("http://localhost:3001")
       .then((res) => {
-        res.forEach((el) => {
-          console.log(el._id);
-        });
         vuexContext.state.schemeSet.schemes = res;
-      })
-      .then((res) => {
-        console.log(res);
+        
       })
       .catch((e) => {
         context.error(e);
@@ -67,6 +78,9 @@ export const actions = {
   },
   addscheme(state, payload) {
     state.commit("SET_SCHEME", payload);
+  },
+  deletescheme(state, payload) {
+    state.commit("DELETE_SCHEME", payload);
   },
   updateSlab(state, payload) {
     state.commit("UPDATE_SLAB", payload);

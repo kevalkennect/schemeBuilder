@@ -62,7 +62,11 @@ schemeRouter.post("/slab", async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(400).statusMessage("ERROR");
+    res.status(400).json({
+      ok: false,
+      message: "error message"      //own message
+
+    });
   }
 });
 

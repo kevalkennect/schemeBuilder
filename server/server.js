@@ -1,6 +1,4 @@
 const express = require("express");
-const scheme = require("./models/schemeSet");
-const mongo = require("./db");
 const app = express();
 const PORT = 3001;
 const cors = require("cors");
@@ -11,7 +9,6 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 const schemeRouter = require("./routes/scheme.router");
 const kpiRouter = require("./routes/kpi.router");
 const benefitsRouter = require("./routes/benefits.router");
-const { displayName } = require("./models/schemeSet");
 const { ObjectId } = require("mongodb");
 
 app.use(cors());
@@ -76,7 +73,8 @@ app.delete("/", async (req, res) => {
 
     console.log(id)
 
-
+    //transection
+    //TODO: pending work
     const { acknowledged } = await db.getDb().db("schemebuilder").collection("schemes").deleteOne({
       _id: ObjectId(id)
     })

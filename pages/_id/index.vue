@@ -86,7 +86,7 @@
               <div class="d-flex flex-column">
                 <div class="d-flex pr-2 pl-2 align-center" v-for="slab in pillar.slabs" :key="slab.id">
                   <v-text-field label="value" :value="slab.value" @change="
-                    (e) => slabUpdated(+e, slab.id, scheme.name, pillar.name,scheme._id)
+                    (e) => slabUpdated(+e, slab.id, scheme.name, pillar.name,scheme._id,pillar._id)
                   "></v-text-field>
                   <v-spacer></v-spacer>
                   <h4>
@@ -139,10 +139,10 @@
       <v-card width="250px" class="d-flex flex-column justify-center align-center pa-2 rounded-lg">
         <v-card-subtitle> {{ scheme.displayName }}'s Benefits </v-card-subtitle>
         <div style="width: 100%; border: 1px solid gray" class="d-flex align-center justify-space-around"
-          v-for="(benefit, index) of benefits" :key="benefit.name">
+          v-for="(benefit, index) of scheme.benefits" :key="benefit.name">
           <h3>{{ index + 1 }} : {{ benefit.displayName }}</h3>
           <h3>{{ benefit.value }}</h3>
-          <v-btn @click="deleteBenefit(benefit, scheme._id)">🗑</v-btn>
+          <v-btn @click="deleteBenefit(scheme._id,benefit._id)">🗑</v-btn>
         </div>
         <v-spacer></v-spacer>
         <div class="pa-5">
@@ -155,12 +155,12 @@
 
 <script>
 export default {
-  async created() {
-    const data = await this.getBenefits();
-    this.benefits.push({});
-    // console.log(this.benefits);
-    // this.benefits.push(this.addBenefit());
-  },
+  // async created() {
+  //   const data = await this.getBenefits();
+  //   this.benefits.push({});
+  //   // console.log(this.benefits);
+  //   // this.benefits.push(this.addBenefit());
+  // },
   computed: {
     scheme() {
       return this.$store.getters.getSchemeById(this.$nuxt._route.params.id);
@@ -186,14 +186,17 @@ export default {
     };
   },
   methods: {
-    slabUpdated(input_value, slab_id, SchemeName, pillar, id) {
+
+
+    slabUpdated(input_value, slab_id, SchemeName, pillar, sid, pid) {
       this.$axios
         .$post("http://localhost:3001/api/schemes/slab", {
           SchemeName,
           input_value,
           slab_id,
           pillar,
-          id
+          sid,
+          pid
         })
         .then((res) => {
           console.log(res);
@@ -204,23 +207,27 @@ export default {
               input_value,
               slab_id,
               pillar,
-              id
+              sid,
+              pid
             });
           }
         });
     },
     deletePillar(pillar, id) {
-      console.log(pillar.name, id);
+      console.log(pillar._id);
       this.$axios
         .$delete("http://localhost:3001/api/schemes/pillar", {
           data: {
-            pillarName: pillar.name,
-            id,
+            _id: pillar._id
           },
         })
         .then((res) => {
           console.log(res);
           if (res.status == "ok") {
+            this.$store.dispatch("deletePillar", {
+              pillar,
+              id
+            })
           }
         });
     },
@@ -278,24 +285,21 @@ export default {
         type: "fixed",
         unit: this.unitValue,
         value: this.benefitValue,
-        _id: id,
+        schemeId: id,
+        schemeName
       };
 
       // console.log(benefitObj);
-
       this.$axios
         .$post("http://localhost:3001/api/benefits", {
-          schemeName,
-          benefitObj,
+          ...benefitObj,
         })
         .then((res) => {
           console.log(res);
           if (res.status == "ok") {
-            this.benefits.push({
-              schemeName,
-              ...benefitObj,
-            });
-            console.log(this.benefits);
+            this.$store.dispatch("addBenefit", {
+              ...benefitObj
+            })
           }
         });
     },
@@ -314,43 +318,19 @@ export default {
       this.paths = newArr;
       console.log(newArr);
     },
-    async getBenefits() {
-      const { data } = await this.$axios.$get(
-        "http://localhost:3001/api/benefits/",
-        {
-          params: {
-            id: this.scheme._id,
-          },
-        }
-      );
-      return data;
-    },
-    deleteBenefit(benefit, id) {
+    deleteBenefit(schemeId, id) {
       this.$axios
         .$delete("http://localhost:3001/api/benefits/", {
           data: {
-            benefit,
             id,
           },
         })
         .then((res) => {
           if (res.status == "ok") {
-            //          state.schemeSet.schemes.forEach((el, i, arr) => {
-            //   if (el._id === id) {
-            //     el.pillars.forEach((ul, ui) => {
-            //       if (ul.name === pillarName) {
-            //         console.log(ul.name, ui);
-            //         state.schemeSet.schemes[i].pillars.splice(ui, 1);
-            //       }
-            //     });
-            //   }
-            // });
-            //filter the local array
-            this.benefits.forEach((el, i) => {
-              if (el.name === benefit.name) {
-                this.benefits.splice(el, 1);
-              }
-            });
+            console.log(res)
+            this.$store.dispatch("deleteBenefit", {
+              schemeId, id
+            })
           }
         });
     },

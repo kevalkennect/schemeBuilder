@@ -29,7 +29,7 @@
         <v-spacer></v-spacer>
         <v-btn color="info" class="mr-10" @click="$router.push(`/${scheme.name}`)">Open</v-btn>
 
-        <v-btn color="info">Delete</v-btn>
+        <v-btn color="info" @click="deleteScheme(scheme._id)">Delete</v-btn>
       </v-card>
     </div>
   </div>
@@ -56,18 +56,35 @@ export default {
       let obj = {
         name: Math.floor(Math.random() * (500 - 1 + 1)) + 1,
         displayName: this.schemeName,
-        pillars: [],
-        benefits: [],
+        // pillars: [],
+        // benefits: [],
       };
       this.$axios
         .$post("http://localhost:3001/api/schemes", obj)
         .then((res) => {
           console.log(res);
           if (res.status == "ok") {
-            this.$store.dispatch("addscheme", obj);
+            this.$store.dispatch("addscheme", { ...obj, _id: res.schemeId, pillars: [], benefits: [] });
           }
         });
     },
+    deleteScheme(id) {
+
+      this.$axios
+        .$delete("http://localhost:3001/", {
+          data: {
+            id
+          }
+        })
+        .then((res) => {
+          console.log(res);
+          if (res.status == "ok") {
+            console.log(res)
+            this.$store.dispatch("deleteSchemeSet", { id });
+          }
+        });
+
+    }
   },
 };
 </script>

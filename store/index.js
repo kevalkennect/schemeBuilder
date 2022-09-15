@@ -31,10 +31,10 @@ export const mutations = {
     });
   },
   ADD_BENEFIT(state, obj) {
-    const { schemeName, benefitObj } = obj;
+    const { schemeId } = obj
     state.schemeSet.schemes.forEach((schemes, i) => {
-      if (schemes.name == schemeName) {
-        state.schemeSet.schemes[i].benefits.push(benefitObj);
+      if (schemes._id == schemeId) {
+        state.schemeSet.schemes[i].benefits.push(obj);
       }
     });
   },
@@ -58,6 +58,45 @@ export const mutations = {
       }
     });
   },
+  DELETE_PILLAR(state, obj) {
+    const { pillar, id } = obj;
+    const { name, displayName, _id: sid } = pillar
+
+    state.schemeSet.schemes.forEach((el, i, arr) => {
+      if (el._id === id) {
+        el.pillars.forEach((ul, ui) => {
+          if (ul.name === name) {
+            console.log(ul.name, ui);
+            state.schemeSet.schemes[i].pillars.splice(ui, 1);
+          }
+        });
+      }
+    });
+  },
+  DELETE_BENEFIT(state, obj) {
+    const { schemeId, id } = obj
+
+    state.schemeSet.schemes.forEach((el, i, arr) => {
+      if (el._id === schemeId) {
+        el.benefits.forEach((el, ui, arr) => {
+          if (el._id === id) {
+            state.schemeSet.schemes[i].benefits.splice(ui, 1)
+          }
+        })
+      }
+    })
+
+  },
+  DELETE_SCHEMESET(state, obj) {
+    const { id } = obj
+    state.schemeSet.schemes.forEach((el, i, arr) => {
+
+      if (el._id === id) {
+        console.log(state.schemeSet.schemes[i])
+        state.schemeSet.schemes.splice(el, 1)
+      }
+    })
+  }
 };
 
 export const actions = {
@@ -68,8 +107,8 @@ export const actions = {
     return context.$axios
       .$get("http://localhost:3001")
       .then((res) => {
-        vuexContext.state.schemeSet.schemes = res;
-        
+        console.log(res)
+        vuexContext.state.schemeSet.schemes = res.result;
       })
       .catch((e) => {
         context.error(e);
@@ -82,6 +121,9 @@ export const actions = {
   deletescheme(state, payload) {
     state.commit("DELETE_SCHEME", payload);
   },
+  deletePillar(state, payload) {
+    state.commit("DELETE_PILLAR", payload);
+  },
   updateSlab(state, payload) {
     state.commit("UPDATE_SLAB", payload);
   },
@@ -91,6 +133,12 @@ export const actions = {
   addBenefit(state, payload) {
     state.commit("ADD_BENEFIT", payload);
   },
+  deleteBenefit(state, payload) {
+    state.commit("DELETE_BENEFIT", payload)
+  },
+  deleteSchemeSet(state, payload) {
+    state.commit("DELETE_SCHEMESET", payload)
+  }
 };
 
 export const getters = {

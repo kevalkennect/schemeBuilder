@@ -26,70 +26,39 @@ benefitRoute.get("/", (req, res) => {
   // res.send("mast");
 });
 
-benefitRoute.post("/", (req, res) => {
+
+//add benefit
+benefitRoute.post("/", async (req, res) => {
   try {
-    if (req.body) {
-      try {
-        const { schemeName, benefitObj } = req.body;
-        const { name, displayName, type, unit, value, _id } = benefitObj;
-        db.getDb()
-          .db("schemebuilder")
-          .collection("benefits")
-          .updateOne(
-            { _id: ObjectId(_id) },
-            {
-              $push: {
-                benefits: { schemeName, name, displayName, type, unit, value },
-              },
-            }
-          )
-          .then((result) => {
-            console.log(result);
-            res.status(200).json({
-              message: "benefit added",
-              schemeId: result.insertedId,
-              status: "ok",
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-            res.status(500).json({ message: "An error occurred." });
-          });
-      } catch (error) {
-        res.status(401).json({ status: error });
-      }
+    // const { name, displayName, type, unit, value, schemeId, schemeName } = req.body;
+    let thedb = db.getDb().db("schemebuilder").collection("benefits")
+    const { acknowledged } = await thedb.insertOne(req.body)
+    if (acknowledged) {
+      res.status(200).json({
+        message: "Benefit Added",
+        status: "ok",
+      });
     }
   } catch (error) {
     res.status(400).statusMessage("ERROR");
   }
 });
 
-benefitRoute.delete("/", (req, res) => {
+benefitRoute.delete("/", async (req, res) => {
   try {
-    console.log(req.body);
-    const { benefit, id } = req.body;
-    console.log("from the beckand deleet benefit", benefit, id);
-    db.getDb()
-      .db("schemebuilder")
-      .collection("benefits")
-      .updateOne(
-        { _id: ObjectId(id) },
-        { $pull: { benefits: { name: benefit.name } } },
-        false,
-        true
-      )
-      .then((result) => {
-        console.log(result);
-        res.status(200).json({
-          message: "Benefit Deleted",
-          schemeId: result.insertedId,
-          status: "ok",
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json({ message: "An error occurred." });
+    const { id } = req.body;
+    console.log(id)
+    let thedb = db.getDb().db("schemebuilder").collection("benefits")
+    const { acknowledged } = await thedb.deleteOne({
+      _id: ObjectId(id)
+    })
+    if (acknowledged) {
+      res.status(200).json({
+        message: "Benefit Deleted",
+        status: "ok",
       });
+    }
+
   } catch (error) {
     res.status(400).statusMessage("ERROR");
   }

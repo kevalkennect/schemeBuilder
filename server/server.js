@@ -17,19 +17,52 @@ app.use("/api/schemes", schemeRouter);
 app.use("/api/kpi", kpiRouter);
 app.use("/api/benefits", benefitsRouter);
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
 
   //agreeration here  
-  db.getDb()
-    .db("schemebuilder")
-    .collection("schemes")
-    .find()
-    .toArray()
-    .then((data) => {
-      console.log(data.length);
-      res.json(data);
-    })
-    .catch((err) => console.log(err));
+
+  try {
+
+    //   db.orders.aggregate( [
+    //     {
+    //       $lookup:
+    //         {
+    //           from: "inventory",
+    //           localField: "item",
+    //           foreignField: "sku",
+    //           as: "inventory_docs"
+    //         }
+    //    }
+    //  ] )
+
+    const result = await db.getDb().db("schemebuilder").collection("schemes").aggregate(
+      [{ "$project": { "userObjId": { "$toObjectId": "_id" } } },
+      {
+        "$lookup": {
+          "from": "pillars",
+          "localField": "userObjId",
+          "foreignField": "schemeId",
+          "as": "allPillars"
+        }
+      }
+      ]
+    )
+    // const ress = await db.getDb().db("schemebuilder").collection("schemes").find().toArray()
+    console.log(result)
+    res.json(result)
+    // db.getDb()
+    //   .db("schemebuilder") 
+    //   .collection("schemes")
+    //   .find()
+    //   .toArray()
+    //   .then((data) => {
+    //     console.log(data.length);
+    //     res.json(data);
+    //   })
+    //   .catch((err) => console.log(err));
+  } catch (error) {
+    console.log(error)
+  }
   // .then((result) => {
   //   console.log(result);
   //   res.status(200).json(result);

@@ -7,9 +7,7 @@
             {{ scheme.displayName }}
           </h1>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="benefitDialog = true"
-            >Add Benefit</v-btn
-          >
+          <v-btn color="primary" @click="benefitDialog = true">Add Benefit</v-btn>
         </div>
 
         <v-dialog v-model="benefitDialog" width="400px">
@@ -18,37 +16,21 @@
             <v-divider></v-divider>
             <div class="d-flex flex-column gap-5">
               <div class="d-flex pr-2 pl-2 align-center">
-                <v-text-field
-                  v-model="benefitName"
-                  label="Benefit Name"
-                ></v-text-field>
+                <v-text-field v-model="benefitName" label="Benefit Name"></v-text-field>
               </div>
 
               <!-- <h4>type : {{}}</h4> -->
               <div class="d-flex pr-2 pl-2 align-center">
-                <v-select
-                  v-model="unitValue"
-                  :items="units"
-                  label="Unit"
-                  dense
-                ></v-select>
+                <v-select v-model="unitValue" :items="units" label="Unit" dense></v-select>
               </div>
               <div class="d-flex pr-2 pl-2 align-center">
-                <v-text-field
-                  v-model="benefitValue"
-                  class="pr-4"
-                  label="value"
-                ></v-text-field>
+                <v-text-field v-model="benefitValue" class="pr-4" label="value"></v-text-field>
               </div>
             </div>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="info" @click="benefitDialog = false">close</v-btn>
-              <v-btn
-                color="success"
-                @click="addBenefit(scheme.name, scheme._id)"
-                >Add</v-btn
-              >
+              <v-btn color="success" @click="addBenefit(scheme.name, scheme._id)">Add</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -58,61 +40,34 @@
             <v-divider></v-divider>
             <div class="d-flex flex-column gap-5">
               <div class="d-flex pr-2 pl-2 align-center">
-                <v-text-field
-                  v-model="pillarName"
-                  label="Pillar Name"
-                ></v-text-field>
+                <v-text-field v-model="pillarName" label="Pillar Name"></v-text-field>
               </div>
               <div class="d-flex pr-2 pl-2 align-center">
-                <v-text-field
-                  v-model="slab_1"
-                  class="pr-4"
-                  label="value"
-                ></v-text-field>
+                <v-text-field v-model="slab_1" class="pr-4" label="value"></v-text-field>
                 <v-spacer></v-spacer>
                 <h4>Above</h4>
                 <v-spacer></v-spacer>
-                <v-text-field
-                  v-model="slab_1_1"
-                  class="pl-4"
-                  label="value"
-                ></v-text-field>
+                <v-text-field v-model="slab_1_1" class="pl-4" label="value"></v-text-field>
               </div>
               <div class="d-flex pr-2 pl-2 align-center">
-                <v-text-field
-                  v-model="slab_2"
-                  class="pr-4"
-                  label="value"
-                ></v-text-field>
+                <v-text-field v-model="slab_2" class="pr-4" label="value"></v-text-field>
                 <v-spacer></v-spacer>
                 <h4>Between</h4>
                 <v-spacer></v-spacer>
-                <v-text-field
-                  v-model="slab_2_2"
-                  class="pl-4"
-                  label="value"
-                ></v-text-field>
+                <v-text-field v-model="slab_2_2" class="pl-4" label="value"></v-text-field>
               </div>
               <div class="d-flex pr-2 pl-2 align-center">
-                <v-text-field
-                  v-model="slab_3"
-                  class="pr-4"
-                  label="value"
-                ></v-text-field>
+                <v-text-field v-model="slab_3" class="pr-4" label="value"></v-text-field>
                 <v-spacer></v-spacer>
                 <h4>Between</h4>
                 <v-spacer></v-spacer>
-                <v-text-field
-                  class="pl-4"
-                  v-model="slab_3_3"
-                  label="value"
-                ></v-text-field>
+                <v-text-field class="pl-4" v-model="slab_3_3" label="value"></v-text-field>
               </div>
             </div>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="info" @click="pillarDialog = false">close</v-btn>
-              <v-btn color="success" @click="addPillar(scheme.name)">Add</v-btn>
+              <v-btn color="success" @click="addPillar(scheme.name,scheme._id)">Add</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -121,38 +76,23 @@
           <div class="d-flex align-center" style="height: 60px">
             <h2>Pillars</h2>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click="pillarDialog = true"
-              >Add Pillar</v-btn
-            >
+            <v-btn color="success" @click="pillarDialog = true">Add Pillar</v-btn>
           </div>
           <div class="d-flex align-center justify-space-around">
-            <v-card
-              v-for="pillar in scheme.pillars"
-              :key="pillar.name"
-              width="300px"
-              class="align-center rounded-lg"
-              height="400px"
-            >
+            <v-card v-for="pillar in scheme.pillars" :key="pillar.name" width="300px" class="align-center rounded-lg"
+              height="400px">
               <v-card-title> {{ pillar.displayName }} </v-card-title>
               <v-divider></v-divider>
               <div class="d-flex flex-column">
-                <div
-                  class="d-flex pr-2 pl-2 align-center"
-                  v-for="slab in pillar.slabs"
-                  :key="slab.id"
-                >
-                  <v-text-field
-                    label="value"
-                    :value="slab.value"
-                    @change="
-                      (e) => slabUpdated(+e, slab.id, scheme.name, pillar.name)
-                    "
-                  ></v-text-field>
+                <div class="d-flex pr-2 pl-2 align-center" v-for="slab in pillar.slabs" :key="slab.id">
+                  <v-text-field label="value" :value="slab.value" @change="
+                    (e) => slabUpdated(+e, slab.id, scheme.name, pillar.name,scheme._id)
+                  "></v-text-field>
                   <v-spacer></v-spacer>
                   <h4>
                     {{ slab.config == "greater" ? "and above" : "" }}
                     {{
-                      slab.config == "between" ? `between ${slab.b_value}` : ""
+                    slab.config == "between" ? `between ${slab.b_value}` : ""
                     }}
                   </h4>
                   <v-spacer></v-spacer>
@@ -166,37 +106,22 @@
           <div class="d-flex align-center" style="height: 60px">
             <h2>Paths</h2>
             <!-- <v-spacer></v-spacer> -->
-            <v-btn class="ml-10" color="info" @click="calculate(scheme.pillars)"
-              >Calculate</v-btn
-            >
+            <v-btn class="ml-10" color="info" @click="calculate(scheme.pillars)">Calculate</v-btn>
           </div>
           <div class="d-flex">
-            <div
-              style="width: 100%"
-              v-for="path in paths"
-              :key="path.displayName"
-            >
-              <v-card
-                width="100%"
-                class="d-flex flex-column"
-                style="border: 1px solid white; height: 100%"
-              >
+            <div style="width: 100%" v-for="path in paths" :key="path.displayName">
+              <v-card width="100%" class="d-flex flex-column" style="border: 1px solid white; height: 100%">
                 <v-card-title primary-title>
                   {{ path.displayName }}
                 </v-card-title>
                 <v-divider></v-divider>
-                <v-card
-                  v-for="value in path.p_value"
-                  style="height: 100%; border: 1px dashed white"
-                  :key="value"
-                  class="
+                <v-card v-for="value in path.p_value" style="height: 100%; border: 1px dashed white" :key="value" class="
                     ma-2
                     d-flex
                     flex-column
                     justify-space-around justify-center
                     rounded-lg
-                  "
-                >
+                  ">
                   <v-card-subtitle v-for="slab in path.slabs" :key="slab.id">
                     {{ slab.value }}
                     {{ slab.config }}
@@ -211,26 +136,17 @@
     </v-app>
 
     <div class="custom">
-      <v-card
-        width="250px"
-        class="d-flex flex-column justify-center align-center pa-2 rounded-lg"
-      >
+      <v-card width="250px" class="d-flex flex-column justify-center align-center pa-2 rounded-lg">
         <v-card-subtitle> {{ scheme.displayName }}'s Benefits </v-card-subtitle>
-        <div
-          style="width: 100%; border: 1px solid gray"
-          class="d-flex align-center justify-space-around"
-          v-for="(benefit, index) of benefits"
-          :key="benefit.name"
-        >
+        <div style="width: 100%; border: 1px solid gray" class="d-flex align-center justify-space-around"
+          v-for="(benefit, index) of benefits" :key="benefit.name">
           <h3>{{ index + 1 }} : {{ benefit.displayName }}</h3>
           <h3>{{ benefit.value }}</h3>
           <v-btn @click="deleteBenefit(benefit, scheme._id)">🗑</v-btn>
         </div>
         <v-spacer></v-spacer>
         <div class="pa-5">
-          <v-btn small color="primary" @click="benefitDialog = true"
-            >Add Benefit</v-btn
-          >
+          <v-btn small color="primary" @click="benefitDialog = true">Add Benefit</v-btn>
         </div>
       </v-card>
     </div>
@@ -241,8 +157,8 @@
 export default {
   async created() {
     const data = await this.getBenefits();
-    this.benefits.push(...data.benefits);
-    console.log(this.benefits);
+    this.benefits.push({});
+    // console.log(this.benefits);
     // this.benefits.push(this.addBenefit());
   },
   computed: {
@@ -270,13 +186,14 @@ export default {
     };
   },
   methods: {
-    slabUpdated(input_value, slab_id, SchemeName, pillar) {
+    slabUpdated(input_value, slab_id, SchemeName, pillar, id) {
       this.$axios
         .$post("http://localhost:3001/api/schemes/slab", {
           SchemeName,
           input_value,
           slab_id,
           pillar,
+          id
         })
         .then((res) => {
           console.log(res);
@@ -287,6 +204,7 @@ export default {
               input_value,
               slab_id,
               pillar,
+              id
             });
           }
         });
@@ -306,11 +224,12 @@ export default {
           }
         });
     },
-    addPillar(schemeName) {
+    addPillar(schemeName, id) {
       const pillarObj = {
         name: Math.floor(Math.random() * (500 - 400 + 1)) + 400,
         displayName: this.pillarName,
         kpi_dataSet: "",
+        schemeId: id,
         slabs: [
           {
             id: 1,

@@ -1,7 +1,7 @@
 const mongodb = require("mongodb");
 
 const MongoClient = mongodb.MongoClient;
-const mongoDbUrl = "mongodb://127.0.0.1:27017";
+const mongoDbUrl = "mongodb://127.0.0.1:27017/";
 
 let _db;
 

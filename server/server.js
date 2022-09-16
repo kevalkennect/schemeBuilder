@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 const schemeRouter = require("./routes/scheme.router");
 const kpiRouter = require("./routes/kpi.router");
 const benefitsRouter = require("./routes/benefits.router");
-const { ObjectId } = require("mongodb");
+const { ObjectId, MongoError } = require("mongodb");
 
 app.use(cors());
 app.use("/api/schemes", schemeRouter);
@@ -68,38 +68,66 @@ app.get("/", async (req, res) => {
 
 app.delete("/", async (req, res) => {
 
+  const { id } = req.body
+  console.log(id)
+  //transection
+  //TODO: pending work
+  const transactionOptions = {
+    readConcern: { level: 'snapshot' },
+    writeConcern: { w: 'majority' },
+    readPreference: 'primary'
+  };
+
+  const session = await db.getDb().startSession();
+
   try {
-    const { id } = req.body
+    // session.startTransaction(transactionOptions)
+    // console.log(session)
 
-    console.log(id)
+    await session.withTransaction(
+      async (session) => { /* your transaction here */
 
-    //transection
-    //TODO: pending work
-    const { acknowledged } = await db.getDb().db("schemebuilder").collection("schemes").deleteOne({
-      _id: ObjectId(id)
-    })
-    const { acknowledged: isTrue } = await db.getDb().db("schemebuilder").collection("pillars").deleteOne({
-      schemeId: ObjectId(id)
-    })
-    const { acknowledged: final } = await db.getDb().db("schemebuilder").collection("benefits").deleteOne({
-      schemeId: ObjectId(id)
-    })
-
-
-
-    if (acknowledged && isTrue && final) {
-      res.status(200).json({
-        message: "Documents Deleted",
-        status: "ok",
-      });
-    }
+        await db.getDb().db("schemebuilder").collection("pillars").deleteOne({
+          schemeId: id
+        })
+        await db.getDb().db("schemebuilder").collection("benefits").deleteOne({
+          schemeId: id
+        })
+        await db.getDb().db("schemebuilder").collection("schemes").deleteOne({
+          _id: ObjectId(id)
+        })
+      },
+      transactionOptions);
+    console.log('Transaction successfully committed.', result);
+    res.status(200).json({
+      message: "Deleted all",
+      status: "ok",
+    });
+    // await session.commitTransaction();
 
   } catch (error) {
-    console.log(error)
-    res.status(400).statusMessage(error);
-  }
+    console.log(error);
+    // if (error instanceof MongoError && error.hasErrorLabel('UnknownTransactionCommitResult')) {
+    //   // add your logic to retry or handle the error
+    // }
+    // else if (error instanceof MongoError && error.hasErrorLabel('TransientTransactionError')) {
+    //   // add your logic to retry or handle the error
+    // } else {
+    //   console.log('An error occured in the transaction, performing a data rollback:' + error);
+    //   res.json({
+    //     ok: false,
+    //     message: "An error occured in the transaction, performing a data rollback"
+    //   })
+    // }
+    // await session.abortTransaction();
 
+
+  } finally {
+    await session.endSession();
+  }
 })
+
+
 db.initDb((err, db) => {
   if (err) {
     console.log(err);

@@ -2,16 +2,17 @@
   <div>
     <v-dialog v-model="dialog" max-width="400px" class="ma-100" transition="dialog-transition">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn color="primary" dark v-bind="attrs" v-on="on">Add Scheme </v-btn>
+        <v-btn data-testid="add-scheme" color="primary" dark v-bind="attrs" v-on="on">Add Scheme </v-btn>
       </template>
       <v-card>
         <v-card-title class="text-h5"> Enter Scheme Name </v-card-title>
         <v-card-text>
-          <v-text-field name="name" label="Scheme Name" v-model="schemeName" id="id"></v-text-field>
+          <v-text-field data-testid="scheme-name" name="name" label="Scheme Name" v-model="schemeName" id="id">
+          </v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="createScheme()">
+          <v-btn data-testid="create-scheme" color="primary" text @click="createScheme()">
             Create Scheme
           </v-btn>
         </v-card-actions>

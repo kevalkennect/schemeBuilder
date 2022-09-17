@@ -98,7 +98,7 @@ app.delete("/", async (req, res) => {
         })
       },
       transactionOptions);
-    console.log('Transaction successfully committed.', result);
+    // console.log('Transaction successfully committed.', result);
     res.status(200).json({
       message: "Deleted all",
       status: "ok",

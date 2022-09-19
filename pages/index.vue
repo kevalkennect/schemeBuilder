@@ -7,7 +7,12 @@
       transition="dialog-transition"
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-btn data-testid="add-scheme" color="primary" dark v-bind="attrs" v-on="on"
+        <v-btn
+          data-testid="add-scheme"
+          color="primary"
+          dark
+          v-bind="attrs"
+          v-on="on"
           >Add Scheme
         </v-btn>
       </template>
@@ -25,7 +30,12 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn data-testid="create-scheme" color="primary" text @click="createScheme()">
+          <v-btn
+            data-testid="create-scheme"
+            color="primary"
+            text
+            @click="createScheme()"
+          >
             Create Scheme
           </v-btn>
         </v-card-actions>
@@ -45,7 +55,10 @@
           <h3>{{ benefit.displayName }}</h3>
         </v-card-title>
         <v-spacer></v-spacer>
-        <v-btn color="info" class="mr-10" @click="$router.push(`/${scheme.name}`)"
+        <v-btn
+          color="info"
+          class="mr-10"
+          @click="$router.push(`/${scheme.name}`)"
           >Open</v-btn
         >
 
@@ -78,17 +91,19 @@ export default {
         // pillars: [],
         // benefits: [],
       };
-      this.$axios.$post("http://localhost:3001/api/schemes", obj).then((res) => {
-        console.log(res);
-        if (res.status == "ok") {
-          this.$store.dispatch("addscheme", {
-            ...obj,
-            _id: res.schemeId,
-            pillars: [],
-            benefits: [],
-          });
-        }
-      });
+      this.$axios
+        .$post("http://localhost:3001/api/schemes", obj)
+        .then((res) => {
+          console.log(res);
+          if (res.status == "ok") {
+            this.$store.dispatch("addscheme", {
+              ...obj,
+              _id: res.schemeId,
+              pillars: [],
+              benefits: [],
+            });
+          }
+        });
     },
     deleteScheme(id) {
       this.$axios
@@ -107,7 +122,6 @@ export default {
     },
   },
 };
-
 </script>
 
 <style></style>

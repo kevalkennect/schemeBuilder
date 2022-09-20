@@ -1,0 +1,23 @@
+version: '3.1'
+
+services:
+    frontend:
+      build: "./frontend"
+      container_name: "frontend"
+      ports:
+          - "3000:3000"
+      command: ["npm", "run", "dev"]
+    backend:
+      build: "./backend"
+      container_name: "backend"
+      ports:
+        - 3001:3001
+      command: ["npm", "run", "server"]
+    mongo:
+      container_name: mongodb
+      image: mongo:latest
+      restart: always
+      ports:
+          - 27017:27017
+      
+

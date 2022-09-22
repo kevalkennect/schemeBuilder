@@ -4,7 +4,7 @@ export default {
   },
   nuxtServerInit(vuexContext, context) {
     return context.$axios
-      .$get("http://backend:3001")
+      .$get("http://0.0.0.0:3001")
       .then((res) => {
         console.log(res);
         vuexContext.state.schemeSet.schemes = res.result;

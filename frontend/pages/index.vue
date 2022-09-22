@@ -88,8 +88,6 @@ export default {
       let obj = {
         name: Math.floor(Math.random() * (500 - 1 + 1)) + 1,
         displayName: this.schemeName,
-        // pillars: [],
-        // benefits: [],
       };
       this.$axios
         .$post("http://localhost:3001/api/schemes", obj)

@@ -1,5 +1,5 @@
 # Dockerfile
-FROM node:16
+FROM node:latest
 
 # create destination directory
 # RUN mkdir -p /usr/src/project

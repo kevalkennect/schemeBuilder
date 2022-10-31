@@ -17,7 +17,9 @@
       </div>
       <v-spacer></v-spacer>
       <div class="pa-5">
-        <v-btn small color="primary" @click="benefitDialog = true">Add Benefit</v-btn>
+        <v-btn small color="primary" @click="benefitDialog = true"
+          >Add Benefit</v-btn
+        >
       </div>
     </v-card>
 
@@ -28,12 +30,20 @@
         <v-divider></v-divider>
         <div class="d-flex flex-column gap-5">
           <div class="d-flex pr-2 pl-2 align-center">
-            <v-text-field v-model="benefitName" label="Benefit Name"></v-text-field>
+            <v-text-field
+              v-model="benefitName"
+              label="Benefit Name"
+            ></v-text-field>
           </div>
 
           <!-- <h4>type : {{}}</h4> -->
           <div class="d-flex pr-2 pl-2 align-center">
-            <v-select v-model="unitValue" :items="units" label="Unit" dense></v-select>
+            <v-select
+              v-model="unitValue"
+              :items="units"
+              label="Unit"
+              dense
+            ></v-select>
           </div>
           <div class="d-flex pr-2 pl-2 align-center">
             <v-text-field
@@ -46,7 +56,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="info" @click="benefitDialog = false">close</v-btn>
-          <v-btn color="success" @click="addBenefit(scheme.name, scheme._id)">Add</v-btn>
+          <v-btn color="success" @click="addBenefit(scheme.name, scheme._id)"
+            >Add</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -66,6 +78,9 @@ export default {
       benefitValue: null,
     };
   },
+  created() {
+    this.$axios.defaults.baseURL = this.$config.BACKEND_API;
+  },
   methods: {
     addBenefit(schemeName, id) {
       console.log(id);
@@ -80,8 +95,9 @@ export default {
       };
 
       // console.log(benefitObj);
+      console.log(process.env.BACKEND_API);
       this.$axios
-        .$post("http://localhost:3001/api/benefits", {
+        .$post("/api/benefits", {
           ...benefitObj,
         })
         .then((res) => {
@@ -96,7 +112,7 @@ export default {
 
     deleteBenefit(schemeId, id) {
       this.$axios
-        .$delete("http://localhost:3001/api/benefits/", {
+        .$delete("/api/benefits/", {
           data: {
             id,
           },

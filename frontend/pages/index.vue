@@ -80,6 +80,9 @@ export default {
       schemeName: "",
     };
   },
+  created() {
+    this.$axios.defaults.baseURL = this.$config.BACKEND_API;
+  },
   methods: {
     createScheme() {
       if (this.schemeName == "") return;
@@ -89,23 +92,21 @@ export default {
         name: Math.floor(Math.random() * (500 - 1 + 1)) + 1,
         displayName: this.schemeName,
       };
-      this.$axios
-        .$post("http://localhost:3001/api/schemes", obj)
-        .then((res) => {
-          console.log(res);
-          if (res.status == "ok") {
-            this.$store.dispatch("addscheme", {
-              ...obj,
-              _id: res.schemeId,
-              pillars: [],
-              benefits: [],
-            });
-          }
-        });
+      this.$axios.$post("/api/schemes", obj).then((res) => {
+        console.log(res);
+        if (res.status == "ok") {
+          this.$store.dispatch("addscheme", {
+            ...obj,
+            _id: res.schemeId,
+            pillars: [],
+            benefits: [],
+          });
+        }
+      });
     },
     deleteScheme(id) {
       this.$axios
-        .$delete("http://localhost:3001/", {
+        .$delete("/", {
           data: {
             id,
           },

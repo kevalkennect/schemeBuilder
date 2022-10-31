@@ -7,34 +7,63 @@
         <v-divider></v-divider>
         <div class="d-flex flex-column gap-5">
           <div class="d-flex pr-2 pl-2 align-center">
-            <v-text-field v-model="pillarName" label="Pillar Name"></v-text-field>
+            <v-text-field
+              v-model="pillarName"
+              label="Pillar Name"
+            ></v-text-field>
           </div>
           <div class="d-flex pr-2 pl-2 align-center">
-            <v-text-field v-model="slab_1" class="pr-4" label="value"></v-text-field>
+            <v-text-field
+              v-model="slab_1"
+              class="pr-4"
+              label="value"
+            ></v-text-field>
             <v-spacer></v-spacer>
             <h4>Above</h4>
             <v-spacer></v-spacer>
-            <v-text-field v-model="slab_1_1" class="pl-4" label="value"></v-text-field>
+            <v-text-field
+              v-model="slab_1_1"
+              class="pl-4"
+              label="value"
+            ></v-text-field>
           </div>
           <div class="d-flex pr-2 pl-2 align-center">
-            <v-text-field v-model="slab_2" class="pr-4" label="value"></v-text-field>
+            <v-text-field
+              v-model="slab_2"
+              class="pr-4"
+              label="value"
+            ></v-text-field>
             <v-spacer></v-spacer>
             <h4>Between</h4>
             <v-spacer></v-spacer>
-            <v-text-field v-model="slab_2_2" class="pl-4" label="value"></v-text-field>
+            <v-text-field
+              v-model="slab_2_2"
+              class="pl-4"
+              label="value"
+            ></v-text-field>
           </div>
           <div class="d-flex pr-2 pl-2 align-center">
-            <v-text-field v-model="slab_3" class="pr-4" label="value"></v-text-field>
+            <v-text-field
+              v-model="slab_3"
+              class="pr-4"
+              label="value"
+            ></v-text-field>
             <v-spacer></v-spacer>
             <h4>Between</h4>
             <v-spacer></v-spacer>
-            <v-text-field class="pl-4" v-model="slab_3_3" label="value"></v-text-field>
+            <v-text-field
+              class="pl-4"
+              v-model="slab_3_3"
+              label="value"
+            ></v-text-field>
           </div>
         </div>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="info" @click="pillarDialog = false">close</v-btn>
-          <v-btn color="success" @click="addPillar(scheme.name, scheme._id)">Add</v-btn>
+          <v-btn color="success" @click="addPillar(scheme.name, scheme._id)"
+            >Add</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -105,10 +134,13 @@ export default {
       slab_3_3: null,
     };
   },
+  created() {
+    this.$axios.defaults.baseURL = this.$config.BACKEND_API;
+  },
   methods: {
     slabUpdated(input_value, slab_id, SchemeName, pillar, sid, pid) {
       this.$axios
-        .$post("http://localhost:3001/api/schemes/slab", {
+        .$post("/api/schemes/slab", {
           SchemeName,
           input_value,
           slab_id,
@@ -134,7 +166,7 @@ export default {
     deletePillar(pillar, id) {
       console.log(pillar._id);
       this.$axios
-        .$delete("http://localhost:3001/api/schemes/pillar", {
+        .$delete("/api/schemes/pillar", {
           data: {
             _id: pillar._id,
           },
@@ -178,7 +210,7 @@ export default {
       };
 
       this.$axios
-        .$post("http://localhost:3001/api/schemes/pillar", {
+        .$post("/api/schemes/pillar", {
           schemeName,
           pillarObj,
         })

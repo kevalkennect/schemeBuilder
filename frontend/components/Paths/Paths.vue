@@ -22,7 +22,13 @@
             v-for="value in path.p_value"
             style="height: 100%; border: 1px dashed white"
             :key="value"
-            class="ma-2 d-flex flex-column justify-space-around justify-center rounded-lg"
+            class="
+              ma-2
+              d-flex
+              flex-column
+              justify-space-around justify-center
+              rounded-lg
+            "
           >
             <v-card-subtitle v-for="slab in path.slabs" :key="slab.id">
               {{ slab.value }}

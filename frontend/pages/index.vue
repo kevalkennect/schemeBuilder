@@ -81,6 +81,7 @@ export default {
     };
   },
   created() {
+    // changes
     this.$axios.defaults.baseURL = this.$config.BACKEND_API;
   },
   methods: {

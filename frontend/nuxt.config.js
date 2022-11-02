@@ -17,10 +17,10 @@ export default {
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
   publicRuntimeConfig: {
-    BACKEND_API: "http://localhost:3001/",
+    BACKEND_API: "http://backend:3001/",
   },
   privateRuntimeConfig: {
-    BACKEND_API: "http://localhost:3001/",
+    BACKEND_API: "http://backend:3001/",
   },
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [],
